@@ -18,3 +18,6 @@ Stuff in the reference package:
 	Parameters for alignment and SNP calling  
 	Workflow description (stages, data flow)  
 Cool name  
+
+## Mind map
+https://www.mindmeister.com/1150608310?t=Dcfo0Hpx04
