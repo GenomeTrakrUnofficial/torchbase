@@ -1,2 +1,3 @@
 docpie>=0.4.1
 ipfsapi>=0.4.3
+avro>=1.8.2

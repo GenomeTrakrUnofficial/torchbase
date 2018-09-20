@@ -3,20 +3,27 @@
 """
 Usage:
     torchbase version [<database>] [<checkpoint>]
-    torchbase run     [options] <database> <file1> [<file2>...] [--checkpoint=<checkpoint>]
+    torchbase run     [options] <database> <file1> [<file2>...] [--checkpoint=<checkpoint>] [--map=<mapper>]
     torchbase pull    [options] <database> [--checkpoint=<checkpoint>]
     torchbase convert [options] <fasta_file> <profile_name> <new_database_name>
     torchbase update  [options] <database_dir> <database>
 
 Options:
     -h --help        Show this screen
-    -v --verbose        Verbose logging
+    -v --verbose     Verbose logging
 
 """
 
+
+import avro.schema
 import docpie
 import reference
+import reference.schema
 import sys
+from importlib.resources import open_text
+
+
+
 
 from functools import wraps
 
@@ -30,6 +37,8 @@ version = "0.1a"
 """
 
 command_dict = {}
+
+schema = avro.schema.parse(open_text(reference.schema, 'package.avsc'))
 
 def command(name):
 	def command_decorator(func):
@@ -55,15 +64,14 @@ def pull(database, *a, **k):
 
 @command("convert")
 def convert(fasta_file, profile_file, new_database_name, *a, **k):
-	pass
+	from convert.main import convert as c_convert
+	return c_convert(fasta_file, profile_file, new_database_name)
 
 @command("update")
 def update(database_dir, database, *a, **k):
 	pass
 
-
-
-if __name__ == '__main__':
+def main():
 	pie = docpie.Docpie(doc=__doc__, version=None, name="torchbase", appearedonly=True)
 	print(pie.preview())
 	args = pie.docpie()
@@ -75,4 +83,7 @@ if __name__ == '__main__':
 	print(f"Torchbase v. {version}")
 	print("High-performance typing schemes")
 	print(__doc__)
+
+if __name__ == '__main__':
+	main()
 	
