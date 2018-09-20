@@ -1,4 +1,4 @@
-# torchbase
+# Torchbase
 Python framework for microbial typing by reference
 
 ## Goals
@@ -18,6 +18,9 @@ Stuff in the reference package:
 	Parameters for alignment and SNP calling  
 	Workflow description (stages, data flow)  
 Cool name  
+Genes that don't map, alleles that map twice, other weirdo cases
+
+Front-end the back-end we want people to use
 
 ## Mind map
 https://www.mindmeister.com/1150608310?t=Dcfo0Hpx04

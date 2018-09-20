@@ -1,61 +1,78 @@
-import docpie
 
-version = "0.1a"
 
 """
 Usage:
-  torchbase [options]
-  torchbase run [options] DATABASE FILE1 [FILE2...]
-  torchbase pull [options] DATABASE
-  torchbase convert [options] FASTA_FILE PROFILE_FILE DATABASE_NAME
-  torchbase update [options] DATABASE_DIR DATABASE
+    torchbase version [<database>] [<checkpoint>]
+    torchbase run     [options] <database> <file1> [<file2>...] [--checkpoint=<checkpoint>]
+    torchbase pull    [options] <database> [--checkpoint=<checkpoint>]
+    torchbase convert [options] <fasta_file> <profile_name> <new_database_name>
+    torchbase update  [options] <database_dir> <database>
 
 Options:
-  -h -? --help    Show this screen
-  -v --version    Show software [and database] version
+    -h --help        Show this screen
+    -v --verbose        Verbose logging
 
 """
 
+import docpie
+import reference
+import sys
+
+from functools import wraps
+
+
+
+version = "0.1a"
 
 """command-decorator, allows subcommands to be obvious in-line, and
    binds argparse argument namespace to declared function parameters.
    ---JSP 2018-09-20
 """
 
+command_dict = {}
+
 def command(name):
 	def command_decorator(func):
-	@wraps(func)
-	def wrapped_command(namespace, *args, **kwargs):
-		#set logging level
-		for log_level, i in zip((WARNING, INFO, DEBUG), range(0, namespace.verbose or 0)): #shorter than a bunch of if-else statements
-			log.setLevel(log_level) #verbose = 0, log level is at logging.ERROR; verbose=3 or more, log level is at DEBUG
-			log.warning("setting log level:" + str(log_level))
-		#test if being piped to
-		if not isatty(0):
-			ids = [str(idd).strip() for idd in stdin]
-			if hasattr(namespace, 'slims_barcodes'):
-				namespace.slims_barcodes += ids
-			else:
-				namespace.slims_barcodes = ids
-			if hasattr(namespace, 'names'):
-				namespace.names += ids
-		for k,v in kwargs.items():
-			setattr(namespace, k, v)
-		[print(f) for f in func(argv=args, **vars(namespace))]
-	return wrapped_command
-return command_decorator
+		command_dict[name] = func
+		return func
+	return command_decorator
 
 
+@command("version")
+def get_version(database=None, checkpoint=None, *a, **k):
+	print(f"Torchbase v. {version}")
+	if database:
+		checks = reference.get_database_state(database, checkpoint)
+		print(f"package {database} at checkpoint {checks[:10]}")
 
+@command("run")
+def run(file1, file2=[], *a, **k):
+	pass
 
+@command("pull")
+def pull(database, *a, **k):
+	pass
 
+@command("convert")
+def convert(fasta_file, profile_file, new_database_name, *a, **k):
+	pass
 
+@command("update")
+def update(database_dir, database, *a, **k):
+	pass
 
-
-def main():
-	#do stuff
 
 
 if __name__ == '__main__':
-	
+	pie = docpie.Docpie(doc=__doc__, version=None, name="torchbase", appearedonly=True)
+	print(pie.preview())
+	args = pie.docpie()
+	args = {k.replace('>','').replace('<',''):v for k,v in args.items()}
+	print(args)
+	for key, command in command_dict.items():
+		if args.get(key):
+			exit(command_dict[key](**args))
+	print(f"Torchbase v. {version}")
+	print("High-performance typing schemes")
+	print(__doc__)
 	
