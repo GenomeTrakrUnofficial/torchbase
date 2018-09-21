@@ -1,0 +1,150 @@
+{
+  "protocol" : "Schema",
+  "namespace" : "torchbase_models",
+  "types" : [ {
+    "type" : "record",
+    "name" : "ProfileElement",
+    "fields" : [ {
+      "name" : "LocusName",
+      "type" : "string"
+    }, {
+      "name" : "AlleleName",
+      "type" : "string"
+    } ]
+  }, {
+    "type" : "record",
+    "name" : "Variant",
+    "fields" : [ {
+      "name" : "Contig",
+      "type" : "string"
+    }, {
+      "name" : "Position",
+      "type" : "int"
+    }, {
+      "name" : "Ref",
+      "type" : "string"
+    }, {
+      "name" : "Alt",
+      "type" : "string"
+    } ]
+  }, {
+    "type" : "record",
+    "name" : "Presence",
+    "fields" : [ {
+      "name" : "Name",
+      "type" : "string"
+    }, {
+      "name" : "Presence",
+      "type" : "boolean"
+    } ]
+  }, {
+    "type" : "record",
+    "name" : "Types",
+    "fields" : [ {
+      "name" : "Name",
+      "type" : "string"
+    }, {
+      "name" : "profile",
+      "type" : {
+        "type" : "array",
+        "items" : "ProfileElement"
+      }
+    }, {
+      "name" : "variants",
+      "type" : {
+        "type" : "array",
+        "items" : "Variant"
+      }
+    }, {
+      "name" : "presence",
+      "type" : {
+        "type" : "array",
+        "items" : "Presence"
+      }
+    } ]
+  }, {
+    "type" : "record",
+    "name" : "Allele",
+    "fields" : [ {
+      "name" : "Name",
+      "type" : "string"
+    }, {
+      "name" : "Hash",
+      "type" : "string"
+    } ]
+  }, {
+    "type" : "record",
+    "name" : "Locus",
+    "fields" : [ {
+      "name" : "Name",
+      "type" : "string"
+    }, {
+      "name" : "alleles",
+      "type" : {
+        "type" : "array",
+        "items" : "Allele"
+      }
+    } ]
+  }, {
+    "type" : "record",
+    "name" : "Reference",
+    "fields" : [ {
+      "name" : "loci",
+      "type" : {
+        "type" : "array",
+        "items" : "Locus"
+      }
+    } ]
+  }, {
+    "type" : "record",
+    "name" : "QC",
+    "fields" : [ {
+      "name" : "Coverage",
+      "type" : [ "null", "float" ]
+    }, {
+      "name" : "VariantDepth",
+      "type" : [ "null", "int" ]
+    }, {
+      "name" : "AverageDepth",
+      "type" : [ "null", "float" ]
+    }, {
+      "name" : "ConsenusCutoff",
+      "type" : [ "null", "float" ]
+    }, {
+      "name" : "Identity",
+      "type" : [ "null", "float" ]
+    }, {
+      "name" : "MappingQuality",
+      "type" : [ "null", "int" ]
+    }, {
+      "name" : "BaseQuality",
+      "type" : [ "null", "int" ]
+    }, {
+      "name" : "VariantQuality",
+      "type" : [ "null", "int" ]
+    } ]
+  } ],
+  "messages" : {
+    "Name" : {
+      "request" : [ {
+        "name" : "name",
+        "type" : "string"
+      } ],
+      "response" : "string"
+    },
+    "Version" : {
+      "request" : [ {
+        "name" : "version",
+        "type" : "string"
+      } ],
+      "response" : "string"
+    },
+    "Description" : {
+      "request" : [ {
+        "name" : "description",
+        "type" : "string"
+      } ],
+      "response" : "string"
+    }
+  }
+}
