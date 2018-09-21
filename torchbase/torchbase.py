@@ -5,17 +5,18 @@ Usage:
     torchbase version [<database>] [<checkpoint>]
     torchbase run     [options] <database> <file1> [<file2>...] [--checkpoint=<checkpoint>] [--map=<mapper>]
     torchbase pull    [options] <database> [--checkpoint=<checkpoint>]
-    torchbase convert [options] <fasta_file> <profile_name> <new_database_name>
+	torchbase convert_pubmlst [options] <new_package_name> [--description=<description>] <profile_file> <locus_fasta1> [<locus_fasta2>...]
+	torchbase convert_seqsero [options]
     torchbase update  [options] <database_dir> <database>
 
 Options:
     -h --help        Show this screen
     -v --verbose     Verbose logging
-
+    
 """
 
 
-import avro.schema
+#import avro.schema
 import docpie
 import reference
 import reference.schema
@@ -38,7 +39,8 @@ version = "0.1a"
 
 command_dict = {}
 
-schema = avro.schema.parse(open_text(reference.schema, 'package.avsc'))
+
+#schema = avro.schema.Parse(open_text(reference.schema, 'torchbase.avdl').read())
 
 def command(name):
 	def command_decorator(func):
@@ -62,10 +64,12 @@ def run(file1, file2=[], *a, **k):
 def pull(database, *a, **k):
 	pass
 
-@command("convert")
-def convert(fasta_file, profile_file, new_database_name, *a, **k):
-	from convert.main import convert as c_convert
-	return c_convert(fasta_file, profile_file, new_database_name)
+@command("convert_pubmlst")
+def convert(new_package_name, profile_file, locus_fasta1, locus_fasta2=None, description="", *a, **k):
+	from convert.main import convert_pubmlst as c_convert
+	loci_fasta = (locus_fasta2 or [])
+	loci_fasta.insert(locus_fasta1)
+	return c_convert(new_package_name, profile_file, loci_fasta, description)
 
 @command("update")
 def update(database_dir, database, *a, **k):
