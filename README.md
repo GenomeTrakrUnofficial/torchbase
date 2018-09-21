@@ -26,8 +26,16 @@ Front-end the back-end we want people to use
 https://www.mindmeister.com/1150608310?t=Dcfo0Hpx04
 
 
-### To generate avsc file
+### To generate avpr file
 
 - Download java
 - Download avrotools.jar
 - java -jar avro-tools-1.8.2.jar idl torchbase/reference/schema/torchbase.avdl
+
+### To create schema_classes.py
+
+- install avrogen python package
+```
+from avrogen import write_protocol_files
+write_protocol_files(string_of_avpr_file, output_dir)
+```
