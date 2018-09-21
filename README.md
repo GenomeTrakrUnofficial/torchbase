@@ -24,3 +24,10 @@ Front-end the back-end we want people to use
 
 ## Mind map
 https://www.mindmeister.com/1150608310?t=Dcfo0Hpx04
+
+
+### To generate avsc file
+
+- Download java
+- Download avrotools.jar
+- java -jar avro-tools-1.8.2.jar idl torchbase/reference/schema/torchbase.avdl

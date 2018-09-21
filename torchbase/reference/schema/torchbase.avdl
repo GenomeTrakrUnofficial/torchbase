@@ -1,0 +1,57 @@
+@namespace("torchbase_models")
+
+protocol Schema {
+  string Name(string name);
+  string Version(string version);
+  string Description(string description);
+
+  record ProfileElement {
+    string LocusName;
+    string AlleleName;
+  }
+
+  record Variant {
+    string Contig;
+    int Position;
+    string Ref;
+    string Alt;
+  }
+
+  record Presence {
+    string Name;
+    boolean Presence;
+  }
+
+  record Types {
+    string Name;
+    array <ProfileElement> profile;
+    array <Variant> variants;
+    array <Presence> presence;
+  }
+
+  record Allele {
+    string Name;
+    string Hash;
+  }
+
+  record Locus {
+    string Name;
+    array <Allele> alleles;
+  }
+
+
+  record Reference {
+    array <Locus> loci;
+  }
+
+  record QC {
+     union {null, float} Coverage;
+     union {null, int} VariantDepth;
+     union {null, float} AverageDepth;
+     union {null, float} ConsenusCutoff;
+     union {null, float} Identity;
+     union {null, int} MappingQuality;
+     union {null, int} BaseQuality;
+     union {null, int} VariantQuality;
+  }
+}
