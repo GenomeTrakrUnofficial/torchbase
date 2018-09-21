@@ -5,8 +5,7 @@ Usage:
     torchbase version [<database>] [<checkpoint>]
     torchbase run     [options] <database> <file1> [<file2>...] [--checkpoint=<checkpoint>] [--map=<mapper>]
     torchbase pull    [options] <database> [--checkpoint=<checkpoint>]
-	torchbase convert_pubmlst [options] <new_package_name> [--description=<description>] <profile_file> <locus_fasta1> [<locus_fasta2>...]
-	torchbase convert_seqsero [options]
+    torchbase convert_pubmlst [options] <new_package_name> [--description=<description>] <profile_file> <locus_fasta1> [<locus_fasta2>...]
     torchbase update  [options] <database_dir> <database>
 
 Options:
@@ -77,10 +76,10 @@ def update(database_dir, database, *a, **k):
 
 def main():
 	pie = docpie.Docpie(doc=__doc__, version=None, name="torchbase", appearedonly=True)
-	#print(pie.preview())
+	print(pie.preview())
 	args = pie.docpie()
 	args = {k.replace('>','').replace('<',''):v for k,v in args.items()}
-	#print(args)
+	print(args)
 	for key, command in command_dict.items():
 		if args.get(key):
 			exit(command_dict[key](**args))
