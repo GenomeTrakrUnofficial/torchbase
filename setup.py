@@ -16,7 +16,7 @@ setup(
 		'Topic :: Utilities'
 	],
 	packages=['torchbase'],
-	package_data={'reference.schema':'reference/schema/*avsc'},
+	package_data={'reference.schema':'reference/schema/*avdl'},
 	url="https://github.com/GenomeTrakrUnofficial/torchbase",
 	entry_points=dict(
 		console_scripts=['torchbase = torchbase.torchbase.main']

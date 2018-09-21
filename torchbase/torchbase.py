@@ -77,10 +77,10 @@ def update(database_dir, database, *a, **k):
 
 def main():
 	pie = docpie.Docpie(doc=__doc__, version=None, name="torchbase", appearedonly=True)
-	print(pie.preview())
+	#print(pie.preview())
 	args = pie.docpie()
 	args = {k.replace('>','').replace('<',''):v for k,v in args.items()}
-	print(args)
+	#print(args)
 	for key, command in command_dict.items():
 		if args.get(key):
 			exit(command_dict[key](**args))
