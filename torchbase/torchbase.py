@@ -47,7 +47,7 @@ def get_version(torch=None, checkpoint=None, *a, **k):
 	print(f"Torchbase v. {version}")
 	if torch:
 		tor = reference.Torch(torch)
-		print(f"torch {torch} v. {tor.version}")
+		print(f"{tor.name} v. {tor.version}")
 
 @command("run")
 def run(torch, file1, file2=[], *a, **k):

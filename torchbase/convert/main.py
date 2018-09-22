@@ -10,7 +10,8 @@ import csv
 import tempfile
 import ipfsapi
 from os.path import join, basename, dirname, split
-from shutil import make_archive
+#from shutil import make_archive
+import tarfile
 from hashlib import sha256 as hasher
 import logging
 import json
@@ -138,10 +139,13 @@ def build_torch(type_definition_struct, alleles=[], config_file_name='config.jso
 			data.writelines(alleles)
 		#name, ddir = split(tempfile.NamedTemporaryFile(suffix="_torch", delete=delete).name)
 		#log.debug(join(ddir, name))
-		archive = make_archive(basename(temp_package), format="gztar", base_dir=temp_package)
-		log.info(f"New torch created at {archive}")
-		input()
-		return archive
+		#archive = make_archive(basename(temp_package), format="gztar", base_dir=temp_package)
+		with tarfile.open(f"{basename(temp_package)}.torch", 'w:gz') as archive:
+			archive.add(join(temp_package, config_file_name))
+			archive.add(join(temp_package, data_file_name))
+			log.info(f"New torch created at {archive.name}")
+			#input()
+			return archive.name
 
 
 
