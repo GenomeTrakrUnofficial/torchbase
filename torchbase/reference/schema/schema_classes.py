@@ -579,7 +579,7 @@ class SchemaClasses(object):
                     self.Description = str()
                     self.reference = SchemaClasses.torchbase_models.ReferenceClass()
                     self.qc = SchemaClasses.torchbase_models.QCClass()
-                    self.types = SchemaClasses.torchbase_models.TypesClass()
+                    self.types = list()
             
             
             @property
@@ -660,14 +660,14 @@ class SchemaClasses(object):
             @property
             def types(self):
                 """
-                :rtype: SchemaClasses.torchbase_models.TypesClass
+                :rtype: list[SchemaClasses.torchbase_models.TypesClass]
                 """
                 return self._inner_dict.get('types')
             
             @types.setter
             def types(self, value):
                 #"""
-                #:param SchemaClasses.torchbase_models.TypesClass value:
+                #:param list[SchemaClasses.torchbase_models.TypesClass] value:
                 #"""
                 self._inner_dict['types'] = value
             
