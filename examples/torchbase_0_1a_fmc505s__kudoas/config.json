@@ -1,0 +1,96 @@
+{
+  "Name": "kudoas",
+  "Version": "1.0.0",
+  "Description": "",
+  "reference": {
+    "loci": [
+      {
+        "Name": "cox1",
+        "alleles": [
+          {
+            "Name": "1",
+            "Hash": "a381584ae1"
+          },
+          {
+            "Name": "2",
+            "Hash": "34c6f69dfe"
+          },
+          {
+            "Name": "3",
+            "Hash": "2ccedcd7f5"
+          }
+        ]
+      },
+      {
+        "Name": "rnl",
+        "alleles": [
+          {
+            "Name": "1",
+            "Hash": "57f1470091"
+          },
+          {
+            "Name": "2",
+            "Hash": "753b410d67"
+          }
+        ]
+      }
+    ]
+  },
+  "qc": {
+    "Coverage": null,
+    "VariantDepth": null,
+    "AverageDepth": null,
+    "ConsenusCutoff": null,
+    "Identity": null,
+    "MappingQuality": null,
+    "BaseQuality": null,
+    "VariantQuality": null
+  },
+  "types": [
+    {
+      "Name": "1",
+      "profile": [
+        {
+          "LocusName": "cox1",
+          "AlleleName": "a381584ae1"
+        },
+        {
+          "LocusName": "rnl",
+          "AlleleName": "57f1470091"
+        }
+      ],
+      "variants": [],
+      "presence": []
+    },
+    {
+      "Name": "2",
+      "profile": [
+        {
+          "LocusName": "cox1",
+          "AlleleName": "34c6f69dfe"
+        },
+        {
+          "LocusName": "rnl",
+          "AlleleName": "753b410d67"
+        }
+      ],
+      "variants": [],
+      "presence": []
+    },
+    {
+      "Name": "3",
+      "profile": [
+        {
+          "LocusName": "cox1",
+          "AlleleName": "2ccedcd7f5"
+        },
+        {
+          "LocusName": "rnl",
+          "AlleleName": "753b410d67"
+        }
+      ],
+      "variants": [],
+      "presence": []
+    }
+  ]
+}
