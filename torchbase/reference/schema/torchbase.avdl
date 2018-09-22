@@ -1,9 +1,6 @@
 @namespace("torchbase_models")
 
 protocol Schema {
-  string Name(string name);
-  string Version(string version);
-  string Description(string description);
 
   record ProfileElement {
     string LocusName;
@@ -53,5 +50,14 @@ protocol Schema {
      union {null, int} MappingQuality;
      union {null, int} BaseQuality;
      union {null, int} VariantQuality;
+  }
+
+  record TorchModel {
+      string Name;
+      string Version;
+      string Description;
+      Reference reference;
+      QC qc;
+      Types types;
   }
 }

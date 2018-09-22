@@ -123,28 +123,28 @@
       "name" : "VariantQuality",
       "type" : [ "null", "int" ]
     } ]
+  }, {
+    "type" : "record",
+    "name" : "TorchModel",
+    "fields" : [ {
+      "name" : "Name",
+      "type" : "string"
+    }, {
+      "name" : "Version",
+      "type" : "string"
+    }, {
+      "name" : "Description",
+      "type" : "string"
+    }, {
+      "name" : "reference",
+      "type" : "Reference"
+    }, {
+      "name" : "qc",
+      "type" : "QC"
+    }, {
+      "name" : "types",
+      "type" : "Types"
+    } ]
   } ],
-  "messages" : {
-    "Name" : {
-      "request" : [ {
-        "name" : "name",
-        "type" : "string"
-      } ],
-      "response" : "string"
-    },
-    "Version" : {
-      "request" : [ {
-        "name" : "version",
-        "type" : "string"
-      } ],
-      "response" : "string"
-    },
-    "Description" : {
-      "request" : [ {
-        "name" : "description",
-        "type" : "string"
-      } ],
-      "response" : "string"
-    }
-  }
+  "messages" : { }
 }
