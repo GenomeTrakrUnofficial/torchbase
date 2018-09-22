@@ -1,15 +1,11 @@
-from .schema_classes import SchemaClasses as S
-from .schema_classes import RequestClasses as R
-
-
-ElementClass = S.torchbase_models.ProfileElementClass
-Variant = S.torchbase_models.VariantClass
-Presence = S.torchbase_models.PresenceClass
-Types = S.torchbase_models.TypesClass
-Allele = S.torchbase_models.AlleleClass
-Locus = S.torchbase_models.LocusClass
-Reference = S.torchbase_models.ReferenceClass
-QC = S.torchbase_models.QCClass
-Version = R.torchbase_models.VersionRequestClass
-Description = R.torchbase_models.DescriptionRequestClass
-Name = R.torchbase_models.NameRequestClass
+from .schema_classes import SchemaClasses
+from .schema_classes import RequestClasses
+Allele = SchemaClasses.torchbase_models.AlleleClass
+Locus = SchemaClasses.torchbase_models.LocusClass
+Presence = SchemaClasses.torchbase_models.PresenceClass
+ProfileElement = SchemaClasses.torchbase_models.ProfileElementClass
+QC = SchemaClasses.torchbase_models.QCClass
+Reference = SchemaClasses.torchbase_models.ReferenceClass
+TorchModel = SchemaClasses.torchbase_models.TorchModelClass
+Types = SchemaClasses.torchbase_models.TypesClass
+Variant = SchemaClasses.torchbase_models.VariantClass
