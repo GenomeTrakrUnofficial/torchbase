@@ -1,5 +1,5 @@
-from .schema_classes import SchemaClasses
-from .schema_classes import RequestClasses
+from ..schema_classes import SchemaClasses
+from ..schema_classes import RequestClasses
 Allele = SchemaClasses.torchbase_models.AlleleClass
 Locus = SchemaClasses.torchbase_models.LocusClass
 Presence = SchemaClasses.torchbase_models.PresenceClass

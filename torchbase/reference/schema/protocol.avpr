@@ -143,7 +143,10 @@
       "type" : "QC"
     }, {
       "name" : "types",
-      "type" : "Types"
+      "type" : {
+        "type" : "array",
+        "items" : "Types"
+      }
     } ]
   } ],
   "messages" : { }

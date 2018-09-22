@@ -58,6 +58,6 @@ protocol Schema {
       string Description;
       Reference reference;
       QC qc;
-      Types types;
+      array <Types> types;
   }
 }
