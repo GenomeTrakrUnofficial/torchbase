@@ -3,7 +3,9 @@
 from subprocess import Popen, PIPE
 import os
 import uuid
+import logging
 
+log = logging.getLogger('torchbase.mapping')
 
 def map(mapping_parameters):
     pass
@@ -26,5 +28,7 @@ def run_srst2(tor, locus_name, fastq1, fastq2=None):
 
     process = Popen(command, stdout=PIPE, stderr=PIPE)
     (stdout, stderr) = process.communicate()
-
+    log.info(stdout)
+    if stderr:
+        log.warn(stderr)
     return outfile + "__genes__resistance__results.txt"
