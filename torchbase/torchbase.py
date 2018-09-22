@@ -52,6 +52,11 @@ def get_version(torch=None, checkpoint=None, *a, **k):
 @command("run")
 def run(torch, file1, file2=[], *a, **k):
 	tor = reference.TorchFile(torch)
+	from mapping.mapping import run_srst2
+	if file2:
+		results = [run_srst2(tor, locus['Name'], file1, file2[0] for locus in tor.reference['loci']]
+	else:
+		results = [run_srst2(tor, locus['Name'], file1 for locus in tor.reference['loci']]
 
 @command("pull")
 def pull(torch, *a, **k):
