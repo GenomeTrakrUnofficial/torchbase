@@ -2,3 +2,4 @@ docpie>=0.4.1
 ipfsapi>=0.4.3
 avro-python3>=1.8.2
 avro-gen>=0.3.0
+git+https://github.com/katholt/srst2

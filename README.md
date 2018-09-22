@@ -39,3 +39,9 @@ https://www.mindmeister.com/1150608310?t=Dcfo0Hpx04
 from avrogen import write_protocol_files
 write_protocol_files(string_of_avpr_file, output_dir)
 ```
+
+### Requirements
+
+The following programs are required to run srst2 to get the allele calls and must be available in PATH
+- bowtie2 v2.1.0 http://bowtie-bio.sourceforge.net/bowtie2/index.shtml
+- SAMtools v0.1.18 https://sourceforge.net/projects/samtools/files/samtools/0.1.18/

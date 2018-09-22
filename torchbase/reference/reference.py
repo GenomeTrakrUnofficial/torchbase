@@ -3,16 +3,20 @@ import tarfile
 import tempfile
 import json
 from hashlib import sha256 as hasher
+import logging
 #
 # from schema import *
 			
 				
-class Torch(object):
+class TorchFile(object):
+
+	log = logging.getLogger('torchbase.Torch')
 
 	def __init__(self, torch_file):
-		self.torch_f = tarfile.open(torch_file, 'r|gz')
-		self.config, self.data = self.torch_f.getmembers()
-		self.config = json.load(self.config)
+		self.torch_f = tor = tarfile.open(torch_file, 'r:gz')
+		self.config, self.data = tor.getmembers()
+		self.config = json.load(tor.extractfile(self.config))
+		self.data = tor.extractfile(self.data)
 
 	@property
 	def hash_index(self):
@@ -38,31 +42,40 @@ class Torch(object):
 		return self.config['Description']
 
 	def alleles_from_locus(self, locus):
-		for locus_name, alleles in self.config['reference']['loci']:
-			if locus_name == locus:
-				return alleles
+		for loc in self.config['reference']['loci']:
+			if loc['Name'] == locus:
+				return loc['alleles']
+		raise ValueError(f"locus '{locus}' not in reference.")
 
 	def index_data(self):
 		hash_index = {}
-		for seq in data.readlines():
-			hashh = hasher(seq.encode('utf-8')).hexdigest()[:10]
-			self.hash_index[hashh] = data.tell()
+		beginning = self.data.tell()
+		for seq in self.data:
+			hashh = hasher(seq.strip()).hexdigest()[:10]
+			hash_index[hashh] = beginning
+			beginning = self.data.tell()
 		self.data.seek(0)
 		return hash_index
 
-	@contextmanager
-	def expose_torch_as_fasta(self, locus):
-		with tempfile.NamedTemporaryFile(prefix=torch.split('_')[-1]) as temp_fasta:
-			for allele in self.alleles_from_locus:
+	def allele_sequences_in_locus(self, locus):
+		for allele in self.alleles_from_locus(locus):
 				name = allele['Name']
 				hashh = allele['Hash']
-				data.seek(self.hash_index[hashh])
-				temp_fasta.write(f"> {hashh}\n")
-				b = data.read(1)
-				while True:
-					temp_fasta.write(b)
-					if b == '\n':
-						break
-					b = data.read(1)
+				self.data.seek(self.hash_index[hashh])
+				yield f"> {hashh}\n"
+				yield self.data.readline()
+
+	@contextmanager
+	def expose_torch_as_fasta(self, locus):
+		with tempfile.NamedTemporaryFile(prefix=self.name) as temp_fasta:
+			temp_fasta.write(self.allele_sequences_in_locus(locus))
 			temp_fasta.flush()
 			yield temp_fasta.name
+
+
+if __name__ == '__main__':
+	t = TorchFile('./torchbase_0_1a_bun9qfkj_kudoas.torch')
+	print(t.name)
+	print(t.version)
+	print(t.index_data())
+	print(list(t.allele_sequences_in_locus('rnl')))
