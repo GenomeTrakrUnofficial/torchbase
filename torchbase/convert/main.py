@@ -1,19 +1,21 @@
 #from torchbase import schema
 from avro import datafile, io
-from reference.schema import Schema, Reference, Types, Locus, Variant, Allele, Presence 
-from reference.schema import SCHEMA as torchbase_schema
+from collections import defaultdict, OrderedDict
+from reference.schema import TorchModel, Reference, Types, Locus, Variant, Allele, ProfileElement 
+#from reference.schema import SCHEMA as torchbase_schema
 from torchbase import version
 
 
 import csv
 import tempfile
 import ipfsapi
-from os.path import join, basename, dirname
+from os.path import join, basename, dirname, split
 from shutil import make_archive
 from hashlib import sha256 as hasher
 import logging
+import json
 
-log = logging.Logger('torchbase.reference')
+logg = logging.Logger('torchbase.reference')
 
 #Heng Li's FASTQ/A reader
 #https://github.com/lh3/readfq/blob/master/readfq.py
@@ -51,51 +53,99 @@ def readfq(fp): # this is a generator function
 
 
 def convert_pubmlst(new_package_name, profile_file, loci_files=[], description=""):
-	log = log.getChild('covert_mlst')
-	loci = []
-	types = []
+	"Convert an MLST scheme in PubMLST 'format' into a Torch file and register it in IPFS"
+	log = logg.getChild('covert_mlst')
+	tor = TorchModel()
+	tor.reference = Reference()
+	allele_hash_cache = defaultdict(dict)
+	# Open allele files, scan and hash alleles, add them to the Torch metadata
+	#
+	# --JSP
 	for loci_file in loci_files:
 		log.info(f"Opening {loci_file}...")
-		alleles = []
+		locus_name = basename(loci_file).split('.')[0]
+		log.debug(locus_name)
+		locus = Locus()
+		locus.Name = locus_name
 		with open(loci_file, 'r') as loci_file_f:
-			for name, seq, _ in readfq(loci_file_f):
-				hash_ = hasher(seq).hexdigest()[:10]
-				log.info(f"{name}: {hash_}")
-				alleles.append(Allele(name=name, hash=hash_))
-		loci.append(Locus(name=basename(loci_file).split('.')[0]), alleles=alleles)
+			for defline, seq, _ in readfq(loci_file_f):
+				loc, name = defline.split('_')
+				hash_ = hasher(seq.encode('utf-8')).hexdigest()[:10]
+				log.info(f"{loc} {name}: {hash_}")
+
+				allele_hash_cache[loc][name] = hash_
+
+				a = Allele()
+				a.Name = name
+				a.Hash = hash_
+				locus.alleles.append(a)
+		tor.reference.loci.append(locus)
+	# Open the profile definition TXT and link allele names to allele hashes,
+	# then add the profile definitions to the Torch struct.
+	# --JSP
+	profile_cache = defaultdict(dict)
+	log.info(f"Opening profile definitions in {profile_file}...")
 	with open(profile_file, 'r') as profile_f:
 		rdr = csv.reader(profile_f, delimiter='\t')
-		header = rdr.next()
+		header = rdr.__next__()
 		log.debug(header)
 		for row in rdr:
-			pass #do stuff
-	#some types stuff
-	reference = Reference(name=new_package_name, version="1.0.0", types=types, loci=loci)
+			st = row[0]
+			log.debug(f"ST {st}")
+			for loc, allele in zip(header[1:], row[1:]):
+				ha = allele_hash_cache[loc][allele]
+				profile_cache[st][loc] = ha
+				#log.debug(f"{loc}_{allele}/{ha}")
+	[log.debug(f"{k}:{v}") for k, v in profile_cache.items()]
+	#Create types and add to Types array
+	#--JSP
+	for type_name, allelic_profile in profile_cache.items():
+		t = Types()
+		t.Name = type_name
+		for locus, hashh in allelic_profile.items():
+			p = ProfileElement()
+			p.LocusName = locus
+			p.AlleleName = hashh
+			t.profile.append(p)
+		tor.types.append(t)
+	#We need to serialize the alleles to a file in the next step, so create and return
+	#a generator to access the allele sequence data only, with line delimiters.
+	#--JSP
 	def allele_generator():
 		for loci_file in loci_files:
-			with open(loci_file, r) as loci:
+			with open(loci_file, 'r') as loci:
 				for _, seq, _ in readfq(loci):
 					yield seq
-	return Schema(reference=reference), allele_generator()
+					yield '\n'
+	#Complete the Torch, build the files, register the Torch
+	#--JSP
+	tor.Name = new_package_name
+	tor.Version = '1.0.0'
+	tor.Description = description
+	return register_torch(new_package_name, build_torch(tor, allele_generator()))
 	
 
 
-def build_database(type_definition_struct, alleles=[], config_file_name='config.json', data_file_name='sequences.dat', delete=False):
+def build_torch(type_definition_struct, alleles=[], config_file_name='config.json', data_file_name='sequences.dat', delete=False):
 	"construct a typing scheme package from the type definition in our schema and an iterator over alleles"
-	log = log.getChild('build_db')
-	with tempfile.TemporaryDirectory(prefix=f"torchbase_{version.replace('.','_')}", delete=delete) as temp_package:
+	log = logg.getChild('build_db')
+	log.info(type_definition_struct)
+	with tempfile.TemporaryDirectory(prefix=f"torchbase_{version.replace('.','_')}_", suffix=f"_{type_definition_struct.Name}") as temp_package:
+		log.info(temp_package)
 		with open(join(temp_package, config_file_name), 'w') as config:
-			with datafile.DataFileWriter(config, io.DatumWriter(), torchbase_schema) as wtr:
-				wtr.append(type_definition_struct)
+			json.dump(type_definition_struct, config, indent=2)
 		with open(join(temp_package, data_file_name), 'w') as data:
 			data.writelines(alleles)
-		output_file = tempfile.NamedTemporaryFile().name
-		make_archive(basename(output_file), format="gztar", root_dir=dirname(output_file), base_dir=temp_package)
-		return output_file
+		#name, ddir = split(tempfile.NamedTemporaryFile(suffix="_torch", delete=delete).name)
+		#log.debug(join(ddir, name))
+		archive = make_archive(basename(temp_package), format="gztar", base_dir=temp_package)
+		log.info(f"New torch created at {archive}")
+		input()
+		return archive
 
 
 
-def register_database(new_package_name, path_to_package):
-	log = log.getChild('register_db')
+def register_torch(new_package_name, path_to_package):
+	log = logg.getChild('register_db')
 	#api = ipfsapi.connect('127.0.0.1', 5001) #need to abstract this later
 	#record = api.add(path_to_archive) #hash of directory

@@ -2,11 +2,11 @@
 
 """
 Usage:
-    torchbase version [<database>] [<checkpoint>]
-    torchbase run     [options] <database> <file1> [<file2>...] [--checkpoint=<checkpoint>] [--map=<mapper>]
-    torchbase pull    [options] <database> [--checkpoint=<checkpoint>]
-    torchbase convert_pubmlst [options] <new_package_name> [--description=<description>] <profile_file> <locus_fasta1> [<locus_fasta2>...]
-    torchbase update  [options] <database_dir> <database>
+    torchbase version [<torch>] [<checkpoint>]
+    torchbase run     [options] <torch> <file1> [<file2>...] [--checkpoint=<checkpoint>] [--map=<mapper>]
+    torchbase pull    [options] <torch> [--checkpoint=<checkpoint>]
+    torchbase convert_pubmlst [options] <new_torch_name> [--description=<description>] <profile_file> <locus_fasta1> [<locus_fasta2>...]
+    torchbase update  [options] <torch>
 
 Options:
     -h --help        Show this screen
@@ -34,16 +34,7 @@ log = logging.getLogger('torchbase')
 
 version = "0.1a"
 
-"""command-decorator, allows subcommands to be obvious in-line, and
-   binds argparse argument namespace to declared function parameters.
-   ---JSP 2018-09-20
-"""
-
 command_dict = {}
-
-
-#schema = avro.schema.Parse(open_text(reference.schema, 'torchbase.avdl').read())
-
 def command(name):
 	def command_decorator(func):
 		command_dict[name] = func
@@ -52,29 +43,29 @@ def command(name):
 
 
 @command("version")
-def get_version(database=None, checkpoint=None, *a, **k):
+def get_version(torch=None, checkpoint=None, *a, **k):
 	print(f"Torchbase v. {version}")
-	if database:
-		checks = reference.get_database_state(database, checkpoint)
-		print(f"package {database} at checkpoint {checks[:10]}")
+	if torch:
+		tor = reference.Torch(torch)
+		print(f"torch {torch} v. {tor.version}")
 
 @command("run")
-def run(file1, file2=[], *a, **k):
-	pass
+def run(torch, file1, file2=[], *a, **k):
+	tor = reference.Torch(torch)
 
 @command("pull")
-def pull(database, *a, **k):
+def pull(torch, *a, **k):
 	pass
 
 @command("convert_pubmlst")
-def convert(new_package_name, profile_file, locus_fasta1, locus_fasta2=None, description="", *a, **k):
+def convert(new_torch_name, profile_file, locus_fasta1, locus_fasta2=None, description="", *a, **k):
 	from convert.main import convert_pubmlst as c_convert
 	loci_fasta = (locus_fasta2 or [])
-	loci_fasta.insert(locus_fasta1)
-	return c_convert(new_package_name, profile_file, loci_fasta, description)
+	loci_fasta.insert(0, locus_fasta1)
+	return c_convert(new_torch_name, profile_file, loci_fasta, description)
 
 @command("update")
-def update(database_dir, database, *a, **k):
+def update(torch, *a, **k):
 	pass
 
 def main():
