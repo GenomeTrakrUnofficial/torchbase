@@ -1,1 +1,1 @@
-from .reference import Torch
+from .reference import TorchFile

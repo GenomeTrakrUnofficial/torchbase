@@ -8,7 +8,7 @@ import logging
 # from schema import *
 			
 				
-class Torch(object):
+class TorchFile(object):
 
 	log = logging.getLogger('torchbase.Torch')
 
@@ -74,7 +74,7 @@ class Torch(object):
 
 
 if __name__ == '__main__':
-	t = Torch('./torchbase_0_1a_bun9qfkj_kudoas.torch')
+	t = TorchFile('./torchbase_0_1a_bun9qfkj_kudoas.torch')
 	print(t.name)
 	print(t.version)
 	print(t.index_data())
