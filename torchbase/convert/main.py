@@ -1,6 +1,9 @@
 #from torchbase import schema
-from torchbase import version
+from avro import datafile, io
 from reference.schema import Schema, Reference, Types, Locus, Variant, Allele, Presence 
+from reference.schema import SCHEMA as torchbase_schema
+from torchbase import version
+
 
 import csv
 import tempfile
@@ -47,7 +50,7 @@ def readfq(fp): # this is a generator function
                 break
 
 
-def convert_mlst(new_package_name, profile_file, loci_files=[], description=""):
+def convert_pubmlst(new_package_name, profile_file, loci_files=[], description=""):
 	log = log.getChild('covert_mlst')
 	loci = []
 	types = []
@@ -82,8 +85,8 @@ def build_database(type_definition_struct, alleles=[], config_file_name='config.
 	log = log.getChild('build_db')
 	with tempfile.TemporaryDirectory(prefix=f"torchbase_{version.replace('.','_')}", delete=delete) as temp_package:
 		with open(join(temp_package, config_file_name), 'w') as config:
-			#avro marshall config >> config.json
-			pass
+			with datafile.DataFileWriter(config, io.DatumWriter(), torchbase_schema) as wtr:
+				wtr.append(type_definition_struct)
 		with open(join(temp_package, data_file_name), 'w') as data:
 			data.writelines(alleles)
 		output_file = tempfile.NamedTemporaryFile().name
