@@ -20,14 +20,17 @@ import docpie
 import reference
 import reference.schema
 import sys
-from importlib.resources import open_text
+import logging
+from sys import stderr, argv
 
 
 
 
 from functools import wraps
 
-
+if 'version' not in argv:
+	logging.basicConfig(format='%(asctime)s - %(name)s \t- %(levelname)s\t - %(message)s', stream=stderr, level=logging.INFO)
+log = logging.getLogger('torchbase')
 
 version = "0.1a"
 
@@ -76,12 +79,13 @@ def update(database_dir, database, *a, **k):
 
 def main():
 	pie = docpie.Docpie(doc=__doc__, version=None, name="torchbase", appearedonly=True)
-	print(pie.preview())
+	#pie.preview()
 	args = pie.docpie()
 	args = {k.replace('>','').replace('<',''):v for k,v in args.items()}
-	print(args)
+	[log.info(f"{k}:{v}") for k,v in args.items() if v]
 	for key, command in command_dict.items():
 		if args.get(key):
+			log.debug(key)
 			exit(command_dict[key](**args))
 	print(f"Torchbase v. {version}")
 	print("High-performance typing schemes")
