@@ -61,7 +61,7 @@ class Torch(object):
 				b = data.read(1)
 				while True:
 					temp_fasta.write(b)
-					if b = '\n':
+					if b == '\n':
 						break
 					b = data.read(1)
 			temp_fasta.flush()
