@@ -1,6 +1,28 @@
 # Torchbase
 Python framework for microbial typing by reference
 
+## Description
+Torchbase is an attempt to unify the 'work' of writing microbial
+sequence typing pieplines. Many forms of sequence typing are
+contemplated - MLST, wg/cgMLST AMR prediction, and others.
+
+Additionally, Torchbase will have transparent versioning and
+distribution of typing reference/profiling packages ('torches')
+to aid reproducible research and consistent typing results.
+
+## Usage
+
+		torchbase version [<torch>] [<checkpoint>]
+		torchbase run     [options] <torch> <file1> [<file2>...] [--checkpoint=<checkpoint>] [--map=<mapper>]
+		torchbase pull    [options] <torch> [--checkpoint=<checkpoint>]
+		torchbase convert_pubmlst [options] <new_torch_name> [--description=<description>] <profile_file> <locus_fasta1> [<locus_fasta2>...]
+		torchbase update  [options] <torch>
+
+	Options:
+		-h --help        Show this screen
+		-v --verbose     Verbose logging
+    
+
 ## Goals
 Consistent reference format  
 IPFS-based reference distribution  
